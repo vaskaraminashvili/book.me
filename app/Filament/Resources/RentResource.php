@@ -7,6 +7,7 @@ use App\Enums\Rent\RentStatus;
 use App\Filament\Resources\RentResource\Pages;
 use App\Filament\Resources\RentResource\RelationManagers;
 use App\Models\Rent;
+use Coolsam\FilamentFlatpickr\Forms\Components\Flatpickr;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -32,9 +33,9 @@ class RentResource extends Resource
                 Forms\Components\Textarea::make('description')
                     ->required()
                     ->columnSpanFull(),
-                Forms\Components\DatePicker::make('date_from')
-                    ->required(),
-                Forms\Components\DatePicker::make('date_to')
+                Flatpickr::make('date')
+                    ->range()
+                    ->minDate(today())
                     ->required(),
                 Forms\Components\TextInput::make('rate')
                     ->numeric(),

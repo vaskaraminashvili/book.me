@@ -7,14 +7,14 @@ enum RentStatus: string
 
     case Draft = 'Draft';
     case Cancelled = 'Cancelled';
-    case Rented = 'Rented';
+    case Booked = 'Booked';
 
     public function getColor(): string
     {
         return match ($this) {
             self::Draft => 'warning',
             self::Cancelled => 'danger',
-            self::Rented => 'success',
+            self::Booked => 'success',
         };
     }
 
