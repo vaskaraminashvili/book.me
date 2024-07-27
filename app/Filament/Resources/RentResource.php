@@ -37,6 +37,11 @@ class RentResource extends Resource
                     ->range()
                     ->minDate(today())
                     ->required(),
+                Forms\Components\TextInput::make('paid')
+                    ->helperText('Amount of money client has already paid')
+                    ->numeric()
+                    ->prefix('€')
+                    ->maxValue(42949672.95),
                 Forms\Components\TextInput::make('rate')
                     ->numeric(),
                 Forms\Components\TextInput::make('daily_rate')

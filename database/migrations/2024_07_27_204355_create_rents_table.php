@@ -19,6 +19,7 @@ return new class extends Migration {
             $table->date('date_from');
             $table->date('date_to');
             $table->double('rate')->nullable();
+            $table->double('paid')->nullable();
             $table->double('daily_rate')->nullable();
             $table->string('status')->nullable();
             $table->string('payment_status')->nullable();
