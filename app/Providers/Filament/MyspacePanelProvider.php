@@ -31,7 +31,8 @@ class MyspacePanelProvider extends PanelProvider
             ->path('myspace')
             ->login()
             ->colors([
-                'primary' => Color::Cyan,
+                'primary' => Color::Indigo,
+                'gray'    => Color::Slate,
             ])
             ->discoverResources(in: app_path('Filament/Resources'),
                 for: 'App\\Filament\\Resources')

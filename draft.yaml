@@ -1,0 +1,14 @@
+models:
+  Rent:
+    title: string
+    lessee: string
+    comment: string
+    description: text
+    date_from: date
+    date_to: date
+    status: string
+    payment_status: string
+    flat_id: int
+  Flat:
+    title: string
+    status: int

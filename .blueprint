@@ -1,0 +1,11 @@
+created:
+    - database/factories/RentFactory.php
+    - database/factories/FlatFactory.php
+    - database/migrations/2024_07_27_204355_create_rents_table.php
+    - database/migrations/2024_07_27_204356_create_flats_table.php
+    - app/Models/Rent.php
+    - app/Models/Flat.php
+models:
+    User: { name: string, email: string, email_verified_at: 'timestamp nullable', password: string, remember_token: 'string:100 nullable' }
+    Rent: { title: string, lessee: string, comment: string, description: text, date_from: date, date_to: date, status: string, payment_status: string, flat_id: int }
+    Flat: { title: string, status: int }
