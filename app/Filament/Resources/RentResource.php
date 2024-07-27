@@ -2,6 +2,8 @@
 
 namespace App\Filament\Resources;
 
+use App\Enums\Rent\PaymentStatus;
+use App\Enums\Rent\RentStatus;
 use App\Filament\Resources\RentResource\Pages;
 use App\Filament\Resources\RentResource\RelationManagers;
 use App\Models\Rent;
@@ -10,11 +12,10 @@ use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class RentResource extends Resource
 {
+
     protected static ?string $model = Rent::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
@@ -23,14 +24,10 @@ class RentResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('title')
-                    ->required()
-                    ->maxLength(255),
                 Forms\Components\TextInput::make('lessee')
                     ->required()
                     ->maxLength(255),
                 Forms\Components\TextInput::make('comment')
-                    ->required()
                     ->maxLength(255),
                 Forms\Components\Textarea::make('description')
                     ->required()
@@ -39,15 +36,19 @@ class RentResource extends Resource
                     ->required(),
                 Forms\Components\DatePicker::make('date_to')
                     ->required(),
-                Forms\Components\TextInput::make('status')
-                    ->required()
-                    ->maxLength(255),
-                Forms\Components\TextInput::make('payment_status')
-                    ->required()
-                    ->maxLength(255),
-                Forms\Components\TextInput::make('flat_id')
-                    ->required()
-                    ->maxLength(255),
+                Forms\Components\TextInput::make('rate')
+                    ->numeric(),
+                Forms\Components\TextInput::make('daily_rate')
+                    ->numeric(),
+                Forms\Components\Select::make('status')
+                    ->options(RentStatus::class)
+                    ->default(RentStatus::Draft),
+                Forms\Components\Select::make('payment_status')
+                    ->options(PaymentStatus::class)
+                    ->default(PaymentStatus::NotPaid),
+                Forms\Components\Select::make('flat_id')
+                    ->relationship('flat', 'title')
+                    ->required(),
             ]);
     }
 
@@ -55,8 +56,6 @@ class RentResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('title')
-                    ->searchable(),
                 Tables\Columns\TextColumn::make('lessee')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('comment')
@@ -67,12 +66,19 @@ class RentResource extends Resource
                 Tables\Columns\TextColumn::make('date_to')
                     ->date()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('status')
+                Tables\Columns\TextColumn::make('rate')
+                    ->numeric()
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('daily_rate')
+                    ->numeric()
+                    ->sortable(),
+                Tables\Columns\SelectColumn::make('status')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('payment_status')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('flat_id')
-                    ->searchable(),
+                    ->numeric()
+                    ->sortable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
@@ -105,9 +111,10 @@ class RentResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListRents::route('/'),
+            'index'  => Pages\ListRents::route('/'),
             'create' => Pages\CreateRent::route('/create'),
-            'edit' => Pages\EditRent::route('/{record}/edit'),
+            'edit'   => Pages\EditRent::route('/{record}/edit'),
         ];
     }
+
 }
