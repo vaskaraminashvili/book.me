@@ -10,6 +10,8 @@ use App\Models\Rent;
 use Coolsam\FilamentFlatpickr\Forms\Components\Flatpickr;
 use Filament\Forms;
 use Filament\Forms\Form;
+use Filament\Forms\Get;
+use Filament\Forms\Set;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -25,32 +27,93 @@ class RentResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\Select::make('flat_id')
-                    ->relationship('flat', 'title')
-                    ->required(),
-                Forms\Components\TextInput::make('lessee')
-                    ->required()
-                    ->maxLength(255),
+                Forms\Components\Section::make('Main')
+                    ->columns(2)
+                    ->schema([
+                        Forms\Components\Select::make('flat_id')
+                            ->relationship('flat', 'title')
+                            ->required(),
+                        Forms\Components\TextInput::make('lessee')
+                            ->required()
+                            ->maxLength(255),
 
-                Flatpickr::make('date')
-                    ->range()
-                    ->minDate(today())
-                    ->required(),
-                Forms\Components\TextInput::make('paid')
-                    ->helperText('Amount of money client has already paid')
-                    ->numeric()
-                    ->prefix('€')
-                    ->maxValue(42949672.95),
-                Forms\Components\TextInput::make('rate')
-                    ->numeric(),
-                Forms\Components\TextInput::make('daily_rate')
-                    ->numeric(),
-                Forms\Components\Select::make('status')
-                    ->options(RentStatus::class)
-                    ->default(RentStatus::Draft),
-                Forms\Components\Select::make('payment_status')
-                    ->options(PaymentStatus::class)
-                    ->default(PaymentStatus::NotPaid),
+                    ]),
+                Forms\Components\Section::make('Finance')
+                    ->columns(2)
+                    ->schema([
+                        Flatpickr::make('date')
+                            ->reactive()
+                            ->range()
+                            ->minDate(today())
+                            ->required()
+                            ->afterStateUpdated(function (Set $set, Get $get) {
+                                Rent::setRates($get, $set);
+                            }),
+                        Forms\Components\TextInput::make('paid')
+                            ->helperText(
+                                'Amount of money client has already paid'
+                            )
+                            ->numeric()
+                            ->suffix('.00')
+                            ->prefix('₾')
+                            ->maxValue(42949672.95),
+
+                        Forms\Components\TextInput::make('daily_rate')
+                            ->live(debounce: 500)
+                            ->numeric()
+                            ->suffix('.00')
+                            ->prefix('₾')
+                            ->maxValue(42949672.95)
+                            ->afterStateUpdated(function (
+                                Set $set,
+                                Get $get,
+                            ) {
+                                $number_of_days
+                                    = Rent::calculateDaysDiff($get('date'));
+                                if ($number_of_days > 1) {
+                                    $full_rate = $number_of_days
+                                        * $get('daily_rate');
+                                    $set('rate', $full_rate);
+                                }
+                            }),
+                        Forms\Components\TextInput::make('rate')
+                            ->live(debounce: 500)
+                            ->numeric()
+                            ->suffix('.00')
+                            ->prefix('₾')
+                            ->maxValue(42949672.95)
+                            ->afterStateUpdated(function (Set $set, Get $get,) {
+                                $number_of_days
+                                    = Rent::calculateDaysDiff($get('date'));
+                                if ($number_of_days > 1) {
+                                    $daily_rate = intval($get('rate')
+                                        / $number_of_days);
+                                    $set('daily_rate', $daily_rate);
+                                }
+                            }),
+                        Forms\Components\TextInput::make('left_to_pay')
+                            ->columnSpanFull()
+                            ->default(1)
+                            ->readOnly()
+                            ->helperText(
+                                'Amount of money client has already paid'
+                            )
+                            ->numeric()
+                            ->suffix('.00')
+                            ->prefix('₾')
+                            ->maxValue(42949672.95),
+
+                    ]),
+                Forms\Components\Section::make('Status')
+                    ->columns(2)
+                    ->schema([
+                        Forms\Components\Select::make('status')
+                            ->options(RentStatus::class)
+                            ->default(RentStatus::Draft),
+                        Forms\Components\Select::make('payment_status')
+                            ->options(PaymentStatus::class)
+                            ->default(PaymentStatus::NotPaid),
+                    ]),
                 Forms\Components\Section::make('Additional information')
                     ->collapsible()
                     ->schema([
@@ -58,7 +121,9 @@ class RentResource extends Resource
                             ->columnSpanFull(),
                         Forms\Components\TextInput::make('comment')
                             ->placeholder('3 bavshvit da katit')
-                            ->helperText('comment to remind lesser in the future like nickname')
+                            ->helperText(
+                                'comment to remind lesser in the future like nickname'
+                            )
                             ->maxLength(255),
 
                     ]),
