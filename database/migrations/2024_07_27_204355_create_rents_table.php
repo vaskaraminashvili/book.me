@@ -15,7 +15,7 @@ return new class extends Migration {
             $table->id();
             $table->string('lessee');
             $table->string('comment')->nullable();
-            $table->text('description');
+            $table->text('description')->nullable();
             $table->date('date_from');
             $table->date('date_to');
             $table->double('rate')->nullable();

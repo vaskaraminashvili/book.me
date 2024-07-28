@@ -25,14 +25,13 @@ class RentResource extends Resource
     {
         return $form
             ->schema([
+                Forms\Components\Select::make('flat_id')
+                    ->relationship('flat', 'title')
+                    ->required(),
                 Forms\Components\TextInput::make('lessee')
                     ->required()
                     ->maxLength(255),
-                Forms\Components\TextInput::make('comment')
-                    ->maxLength(255),
-                Forms\Components\Textarea::make('description')
-                    ->required()
-                    ->columnSpanFull(),
+
                 Flatpickr::make('date')
                     ->range()
                     ->minDate(today())
@@ -52,9 +51,18 @@ class RentResource extends Resource
                 Forms\Components\Select::make('payment_status')
                     ->options(PaymentStatus::class)
                     ->default(PaymentStatus::NotPaid),
-                Forms\Components\Select::make('flat_id')
-                    ->relationship('flat', 'title')
-                    ->required(),
+                Forms\Components\Section::make('Additional information')
+                    ->collapsible()
+                    ->schema([
+                        Forms\Components\Textarea::make('description')
+                            ->columnSpanFull(),
+                        Forms\Components\TextInput::make('comment')
+                            ->placeholder('3 bavshvit da katit')
+                            ->helperText('comment to remind lesser in the future like nickname')
+                            ->maxLength(255),
+
+                    ]),
+
             ]);
     }
 
