@@ -20,7 +20,6 @@ class Rent extends Model
      */
     protected $fillable
         = [
-            'title',
             'lessee',
             'comment',
             'description',
