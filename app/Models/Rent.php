@@ -5,9 +5,10 @@ namespace App\Models;
 use App\Enums\Rent\PaymentStatus;
 use App\Enums\Rent\RentStatus;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Str;
 
 class Rent extends Model
@@ -82,9 +83,20 @@ class Rent extends Model
         return $number_of_days;
     }
 
-    public function flat(): HasOne
+    public function flat(): BelongsTo
     {
-        return $this->hasOne(Flat::class);
+        return $this->belongsTo(Flat::class);
+    }
+
+    protected function range(): Attribute
+    {
+        return Attribute::make(
+            get: fn(
+                mixed $value,
+                array $attributes
+            ) => Carbon::parse($attributes['date_from'])->format('M-d')
+                .' - '.Carbon::parse($attributes['date_to'])->format('M-d'),
+        );
     }
 
 }

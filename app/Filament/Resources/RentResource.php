@@ -164,28 +164,34 @@ class RentResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('lessee')
+                    ->description(function (Rent $rent) {
+                        return 'Flat :'.$rent->flat->title;
+                    })
                     ->searchable(),
                 Tables\Columns\TextColumn::make('comment')
+                    ->toggleable(isToggledHiddenByDefault: true)
                     ->searchable(),
-                Tables\Columns\TextColumn::make('date_from')
-                    ->date()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('date_to')
-                    ->date()
-                    ->sortable(),
+                Tables\Columns\TextColumn::make('range')
+                    ->label('Rent range'),
+                //                    ->state(function (Rent $record) {
+                //                        return $record['date_from'];
+                //                    }),
                 Tables\Columns\TextColumn::make('rate')
                     ->numeric()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('daily_rate')
-                    ->numeric()
-                    ->sortable(),
+                    ->sortable()
+                    ->description(function (Rent $rent) {
+                        return 'Left to pay '.intval($rent->rate - $rent->paid);
+                    }),
+                //                Tables\Columns\TextColumn::make('daily_rate')
+                //                    ->numeric()
+                //                    ->sortable(),
                 Tables\Columns\SelectColumn::make('status')
+                    ->options(RentStatus::class)
                     ->searchable(),
                 Tables\Columns\TextColumn::make('payment_status')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('flat_id')
-                    ->numeric()
-                    ->sortable(),
+                //                Tables\Columns\TextColumn::make('flat.title')
+                //                    ->sortable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
@@ -199,8 +205,10 @@ class RentResource extends Resource
                 //
             ])
             ->actions([
-                Tables\Actions\DeleteAction::make(),
-                Tables\Actions\EditAction::make(),
+                Tables\Actions\ActionGroup::make([
+                    Tables\Actions\DeleteAction::make(),
+                    Tables\Actions\EditAction::make(),
+                ]),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
