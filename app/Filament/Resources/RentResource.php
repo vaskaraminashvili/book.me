@@ -50,13 +50,24 @@ class RentResource extends Resource
                                 Rent::setRates($get, $set);
                             }),
                         Forms\Components\TextInput::make('paid')
+                            ->debounce(500)
                             ->helperText(
                                 'Amount of money client has already paid'
                             )
                             ->numeric()
                             ->suffix('.00')
                             ->prefix('₾')
-                            ->maxValue(42949672.95),
+                            ->maxValue(42949672.95)
+                            ->afterStateUpdated(function (
+                                Set $set,
+                                Get $get
+                            ) {
+                                if ($get('rate')) {
+                                    $left_to_pay = intval($get('rate'))
+                                        - intval($get('paid'));
+                                    $set('left_to_pay', $left_to_pay);
+                                }
+                            }),
 
                         Forms\Components\TextInput::make('daily_rate')
                             ->live(debounce: 500)
@@ -75,6 +86,11 @@ class RentResource extends Resource
                                         * $get('daily_rate');
                                     $set('rate', $full_rate);
                                 }
+                                if ($get('rate')) {
+                                    $left_to_pay = intval($get('rate'))
+                                        - intval($get('paid'));
+                                    $set('left_to_pay', $left_to_pay);
+                                }
                             }),
                         Forms\Components\TextInput::make('rate')
                             ->live(debounce: 500)
@@ -90,6 +106,11 @@ class RentResource extends Resource
                                         / $number_of_days);
                                     $set('daily_rate', $daily_rate);
                                 }
+                                if ($get('rate')) {
+                                    $left_to_pay = intval($get('rate'))
+                                        - intval($get('paid'));
+                                    $set('left_to_pay', $left_to_pay);
+                                }
                             }),
                         Forms\Components\TextInput::make('left_to_pay')
                             ->columnSpanFull()
@@ -101,7 +122,14 @@ class RentResource extends Resource
                             ->numeric()
                             ->suffix('.00')
                             ->prefix('₾')
-                            ->maxValue(42949672.95),
+                            ->maxValue(42949672.95)
+                            ->extraAttributes(function ($state) {
+                                $bgColor
+                                    = '#3067e754'; // your logic to fetch the right color using the Enum here
+                                // dd($state) // you can use $state to access the current state of the field
+                                return ['style' => "background-color: {$bgColor}"];
+                            })
+                        ,
 
                     ]),
                 Forms\Components\Section::make('Status')
@@ -171,6 +199,7 @@ class RentResource extends Resource
                 //
             ])
             ->actions([
+                Tables\Actions\DeleteAction::make(),
                 Tables\Actions\EditAction::make(),
             ])
             ->bulkActions([

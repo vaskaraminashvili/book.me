@@ -22,6 +22,9 @@ class Rent extends Model
      */
     protected $fillable
         = [
+            'paid',
+            'daily_rate',
+            'rate',
             'lessee',
             'comment',
             'description',
