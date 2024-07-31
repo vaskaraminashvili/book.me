@@ -9,6 +9,7 @@ use App\Filament\Resources\RentResource\RelationManagers;
 use App\Models\Rent;
 use Coolsam\FilamentFlatpickr\Forms\Components\Flatpickr;
 use Filament\Forms;
+use Filament\Forms\Components\ViewField;
 use Filament\Forms\Form;
 use Filament\Forms\Get;
 use Filament\Forms\Set;
@@ -37,6 +38,12 @@ class RentResource extends Resource
                             ->required()
                             ->maxLength(255),
 
+                    ]),
+                Forms\Components\Section::make('Old Records')
+                    ->schema([
+                        ViewField::make('existing_rents')
+                            ->view('filament.components.rent_history_table')
+                            ->dehydrated(false),
                     ]),
                 Forms\Components\Section::make('Finance')
                     ->columns(2)
@@ -239,6 +246,23 @@ class RentResource extends Resource
             'create' => Pages\CreateRent::route('/create'),
             'edit'   => Pages\EditRent::route('/{record}/edit'),
         ];
+    }
+
+    protected static function existingRentsTable(
+        string $mobile,
+        HasTable $livewire
+    ): Tables\Table {
+        return Tables\Table::make($livewire)
+            ->query(Rent::query()->where('id', 1))
+            ->columns([
+                Tables\Columns\TextColumn::make('status')
+                    ->date(),
+                Tables\Columns\TextColumn::make('rate')
+                    ->money('USD'),
+                // Add other columns as needed
+            ])
+            ->query(Rent::query()->where('id', 1))
+            ->paginated(false);
     }
 
 }
