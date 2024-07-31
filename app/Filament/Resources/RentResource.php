@@ -145,7 +145,7 @@ class RentResource extends Resource
                 Forms\Components\Section::make('Additional information')
                     ->collapsible()
                     ->schema([
-                        Forms\Components\Textarea::make('description')
+                        Forms\Components\RichEditor::make('description')
                             ->columnSpanFull(),
                         Forms\Components\TextInput::make('comment')
                             ->placeholder('3 bavshvit da katit')
@@ -180,15 +180,23 @@ class RentResource extends Resource
                     ->numeric()
                     ->sortable()
                     ->description(function (Rent $rent) {
-                        return 'Left to pay '.intval($rent->rate - $rent->paid);
+                        if ($rent->payment_status == PaymentStatus::BPaid) {
+                            return 'Left to pay '.intval($rent->rate
+                                    - $rent->paid);
+                        }
                     }),
                 //                Tables\Columns\TextColumn::make('daily_rate')
                 //                    ->numeric()
                 //                    ->sortable(),
+
                 Tables\Columns\SelectColumn::make('status')
                     ->options(RentStatus::class)
                     ->searchable(),
                 Tables\Columns\TextColumn::make('payment_status')
+                    ->badge()
+                    ->color(function ($state) {
+                        return $state->getColors();
+                    })
                     ->searchable(),
                 //                Tables\Columns\TextColumn::make('flat.title')
                 //                    ->sortable(),

@@ -94,8 +94,8 @@ class Rent extends Model
             get: fn(
                 mixed $value,
                 array $attributes
-            ) => Carbon::parse($attributes['date_from'])->format('M-d')
-                .' - '.Carbon::parse($attributes['date_to'])->format('M-d'),
+            ) => Carbon::parse($attributes['date_from'])->format('d-M-y')
+                .' - '.Carbon::parse($attributes['date_to'])->format('d-M-y'),
         );
     }
 
