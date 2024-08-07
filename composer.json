@@ -8,6 +8,7 @@
         "php": "^8.2",
         "coolsam/flatpickr": "3.x-dev",
         "filament/filament": "3.2.57",
+        "ibrahimbougaoua/filament-rating-star": "^1.0",
         "laravel/framework": "^11.9",
         "laravel/tinker": "^2.9"
     },

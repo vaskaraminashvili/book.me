@@ -16,9 +16,13 @@ use Filament\Forms\Set;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
+use IbrahimBougaoua\FilamentRatingStar\Actions\RatingStar;
+use IbrahimBougaoua\FilamentRatingStar\Columns\RatingStarColumn;
 
 class RentResource extends Resource
 {
+
+    public static $rent_history;
 
     protected static ?string $model = Rent::class;
 
@@ -28,6 +32,11 @@ class RentResource extends Resource
     {
         return $form
             ->schema([
+                Forms\Components\Section::make('Old Records')
+                    ->schema([
+                        ViewField::make('rent_history')
+                            ->view('filament.components.rent_history_table'),
+                    ]),
                 Forms\Components\Section::make('Main')
                     ->columns(2)
                     ->schema([
@@ -37,14 +46,21 @@ class RentResource extends Resource
                         Forms\Components\TextInput::make('lessee')
                             ->required()
                             ->maxLength(255),
+                        Forms\Components\TextInput::make('mobile')
+                            ->afterStateUpdated(function (Set $set, $state) {
+                                self::$rent_history
+                                    = self::$model::query()
+                                    ->where('mobile', 'like',
+                                        '%'.$state.'%')
+                                    ->limit(5)
+                                    ->get();
+                                $set('rent_history', self::$rent_history);
+                                dump(self::$rent_history);
+                            })
+                            ->debounce(200),
 
                     ]),
-                Forms\Components\Section::make('Old Records')
-                    ->schema([
-                        ViewField::make('existing_rents')
-                            ->view('filament.components.rent_history_table')
-                            ->dehydrated(false),
-                    ]),
+
                 Forms\Components\Section::make('Finance')
                     ->columns(2)
                     ->schema([
@@ -150,17 +166,25 @@ class RentResource extends Resource
                             ->default(PaymentStatus::NotPaid),
                     ]),
                 Forms\Components\Section::make('Additional information')
+                    ->columns(2)
                     ->collapsible()
                     ->schema([
                         Forms\Components\RichEditor::make('description')
                             ->columnSpanFull(),
                         Forms\Components\TextInput::make('comment')
+                            ->columnSpan(1)
                             ->placeholder('3 bavshvit da katit')
                             ->helperText(
                                 'comment to remind lesser in the future like nickname'
                             )
                             ->maxLength(255),
-
+                        RatingStar::make('rating')
+                            ->hint('rate lessee from 1 to 5 ')
+                            ->columnSpan(1)
+                            ->label('Rating'),
+                        Forms\Components\RichEditor::make('lessee_comment')
+                            ->columnSpanFull()
+                            ->hint('Here you can comment about lessee if they were good/bad'),
                     ]),
 
             ]);
@@ -207,6 +231,9 @@ class RentResource extends Resource
                     ->searchable(),
                 //                Tables\Columns\TextColumn::make('flat.title')
                 //                    ->sortable(),
+                RatingStarColumn::make('rating')
+                    ->size('sm')
+                    ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
@@ -221,8 +248,8 @@ class RentResource extends Resource
             ])
             ->actions([
                 Tables\Actions\ActionGroup::make([
-                    Tables\Actions\DeleteAction::make(),
                     Tables\Actions\EditAction::make(),
+                    Tables\Actions\DeleteAction::make(),
                 ]),
             ])
             ->bulkActions([
@@ -263,6 +290,11 @@ class RentResource extends Resource
             ])
             ->query(Rent::query()->where('id', 1))
             ->paginated(false);
+    }
+
+    public function mount()
+    {
+        self::$rent_history = collect();
     }
 
 }

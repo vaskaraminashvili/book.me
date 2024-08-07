@@ -33,6 +33,9 @@ class RentFactory extends Factory
             'status'         => $this->faker->randomElement(RentStatus::class),
             'payment_status' => $this->faker->randomElement(PaymentStatus::class),
             'flat_id'        => Flat::factory(),
+            'mobile'         => $this->faker->phoneNumber(),
+            'rating'         => $this->faker->numberBetween(1, 5),
+            'lessee_comment' => $this->faker->text(),
         ];
     }
 

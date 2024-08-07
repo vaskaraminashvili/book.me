@@ -34,6 +34,9 @@ class Rent extends Model
             'status',
             'payment_status',
             'flat_id',
+            'lessee_comment',
+            'rating',
+            'mobile',
         ];
 
     /**
