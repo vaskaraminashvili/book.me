@@ -32,11 +32,7 @@ class RentResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\Section::make('Old Records')
-                    ->schema([
-                        ViewField::make('rent_history')
-                            ->view('filament.components.rent_history_table'),
-                    ]),
+
                 Forms\Components\Section::make('Main')
                     ->columns(2)
                     ->schema([
@@ -48,19 +44,28 @@ class RentResource extends Resource
                             ->maxLength(255),
                         Forms\Components\TextInput::make('mobile')
                             ->afterStateUpdated(function (Set $set, $state) {
-                                self::$rent_history
+                                $rent_history
                                     = self::$model::query()
                                     ->where('mobile', 'like',
-                                        '%'.$state.'%')
-                                    ->limit(5)
+                                        '%'.$state.'%');
+                                $count = $rent_history->count();
+                                $rent_history
+                                    = $rent_history->limit(5)
                                     ->get();
-                                $set('rent_history', self::$rent_history);
-                                dump(self::$rent_history);
+                                $set('rent_history', [
+                                    'count'        => $count,
+                                    'rent_history' => $rent_history,
+                                ]);
+                                dump($count);
                             })
                             ->debounce(200),
 
                     ]),
-
+                Forms\Components\Section::make('Old Records')
+                    ->schema([
+                        ViewField::make('rent_history')
+                            ->view('filament.components.rent_history_table'),
+                    ]),
                 Forms\Components\Section::make('Finance')
                     ->columns(2)
                     ->schema([
