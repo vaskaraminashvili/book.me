@@ -22,8 +22,6 @@ use IbrahimBougaoua\FilamentRatingStar\Columns\RatingStarColumn;
 class RentResource extends Resource
 {
 
-    public static $rent_history;
-
     protected static ?string $model = Rent::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
@@ -46,6 +44,7 @@ class RentResource extends Resource
                             ->afterStateUpdated(function (Set $set, $state) {
                                 $rent_history
                                     = self::$model::query()
+                                    ->where('user_id', auth()->id())
                                     ->where('mobile', 'like',
                                         '%'.$state.'%');
                                 $count = $rent_history->count();
@@ -248,6 +247,7 @@ class RentResource extends Resource
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
+            ->defaultSort('id', 'desc')
             ->filters([
                 //
             ])

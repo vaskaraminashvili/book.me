@@ -5,53 +5,65 @@
             $count = !empty($this->data['rent_history']['count']) ? $this->data['rent_history']['count'] : 0;
     @endphp
     @if(!empty($rents))
-        <div>Showing Last 5 Records</div>
-        <div>rents count : {{$count}}</div>
+        <div class="flex justify-between">
+            <h3 class="fi-section-header-heading text-base font-semibold leading-6 text-gray-950 dark:text-white">
+                Showing Max Last 5 Records
+            </h3>
+            <h3 class="fi-section-header-heading text-base font-semibold leading-6 text-gray-950 dark:text-white">
+                rents count : {{$count}}
+            </h3>
+        </div>
         <table class="fi-ta-table w-full table-auto divide-y divide-gray-200 text-start dark:divide-white/5">
             <thead class="divide-y divide-gray-200 dark:divide-white/5">
             <tr class="bg-gray-50 dark:bg-white/5">
-                <th class="fi-ta-header-cell px-3 py-3.5 sm:first-of-type:ps-6 sm:last-of-type:pe-6 fi-table-header-cell-title"
-                    style=";">
+                <th class="fi-ta-header-cell px-3 py-3.5 sm:first-of-type:ps-6 sm:last-of-type:pe-6 fi-table-header-cell-title">
                     <span class="group flex w-full items-center gap-x-1 whitespace-nowrap justify-start">
-                    <span class="fi-ta-header-cell-label text-sm font-semibold text-gray-950 dark:text-white">
-                    Title
-                    </span>
+                        <span class="fi-ta-header-cell-label text-sm font-semibold text-gray-950 dark:text-white">
+                        Lessee
+                        </span>
                     </span>
                 </th>
-                <th class="fi-ta-header-cell px-3 py-3.5 sm:first-of-type:ps-6 sm:last-of-type:pe-6 fi-table-header-cell-title"
-                    style=";">
+                <th class="fi-ta-header-cell px-3 py-3.5 sm:first-of-type:ps-6 sm:last-of-type:pe-6 fi-table-header-cell-title">
                     <span class="group flex w-full items-center gap-x-1 whitespace-nowrap justify-start">
-                    <span class="fi-ta-header-cell-label text-sm font-semibold text-gray-950 dark:text-white">
-                    Title
+                        <span class="fi-ta-header-cell-label text-sm font-semibold text-gray-950 dark:text-white">
+                        Date range
+                        </span>
                     </span>
+                </th>
+                <th class="fi-ta-header-cell px-3 py-3.5 sm:first-of-type:ps-6 sm:last-of-type:pe-6 fi-table-header-cell-title">
+                    <span class="group flex w-full items-center gap-x-1 whitespace-nowrap justify-start">
+                        <span class="fi-ta-header-cell-label text-sm font-semibold text-gray-950 dark:text-white">
+                        Daily Rate/Rate
+                        </span>
+                    </span>
+                </th>
+                <th class="fi-ta-header-cell px-3 py-3.5 sm:first-of-type:ps-6 sm:last-of-type:pe-6 fi-table-header-cell-title">
+                    <span class="group flex w-full items-center gap-x-1 whitespace-nowrap justify-start">
+                        <span class="fi-ta-header-cell-label text-sm font-semibold text-gray-950 dark:text-white">
+                        Rating
+                        </span>
                     </span>
                 </th>
                 <th class="w-1"></th>
             </tr>
             </thead>
             <tbody class="divide-y divide-gray-200 whitespace-nowrap dark:divide-white/5">
-
             @if(!empty($rents))
-
                 @foreach($rents as $record)
-
-                    <tr
-                        class="fi-ta-row [@media(hover:hover)]:transition [@media(hover:hover)]:duration-75 hover:bg-gray-50 dark:hover:bg-white/5"
-                        wire:key="Ct6dU8ixLjF8fNm9v9VC.table.records.2">
-                        <td class="fi-ta-cell p-0 first-of-type:ps-1 last-of-type:pe-1 sm:first-of-type:ps-3 sm:last-of-type:pe-3 fi-table-cell-title"
-                            wire:key="Ct6dU8ixLjF8fNm9v9VC.table.record.2.column.title">
+                    <tr class="fi-ta-row ">
+                        <td class="fi-ta-cell p-0 first-of-type:ps-1 last-of-type:pe-1 sm:first-of-type:ps-3 sm:last-of-type:pe-3 fi-table-cell-title">
                             <div class="fi-ta-col-wrp">
-                                <a href="http://book.me.test/myspace/flats/2/edit"
+                                <a href="{{route('filament.myspace.resources.rents.edit' , ['record' => $record->id])}}"
                                    class="flex w-full disabled:pointer-events-none justify-start text-start">
                                     <div class="fi-ta-text grid w-full gap-y-1 px-3 py-4">
                                         <div class="flex ">
                                             <div class="flex max-w-max" style="">
                                                 <div class="fi-ta-text-item inline-flex items-center gap-1.5  ">
-                                            <span
-                                                class="fi-ta-text-item-label text-sm leading-6 text-gray-950 dark:text-white  "
-                                                style="">
-                                            {{$record->lessee}}
-                                            </span>
+                                                    <span
+                                                        class="fi-ta-text-item-label text-sm leading-6 text-gray-950 dark:text-white  "
+                                                        style="">
+                                                        {{$record->lessee}}
+                                                    </span>
                                                 </div>
                                             </div>
                                         </div>
@@ -59,31 +71,84 @@
                                 </a>
                             </div>
                         </td>
-                        <td class="fi-ta-cell p-0 first-of-type:ps-1 last-of-type:pe-1 sm:first-of-type:ps-3 sm:last-of-type:pe-3 fi-table-cell-status"
-                            wire:key="Ct6dU8ixLjF8fNm9v9VC.table.record.2.column.status">
+                        <td class="fi-ta-cell p-0 first-of-type:ps-1 last-of-type:pe-1 sm:first-of-type:ps-3 sm:last-of-type:pe-3 fi-table-cell-title">
                             <div class="fi-ta-col-wrp">
-                                <a href="http://book.me.test/myspace/flats/2/edit"
+                                <a href="{{route('filament.myspace.resources.rents.edit' , ['record' => $record->id])}}"
                                    class="flex w-full disabled:pointer-events-none justify-start text-start">
                                     <div class="fi-ta-text grid w-full gap-y-1 px-3 py-4">
                                         <div class="flex ">
                                             <div class="flex max-w-max" style="">
                                                 <div class="fi-ta-text-item inline-flex items-center gap-1.5  ">
-                                            <span
-                                                class="fi-ta-text-item-label text-sm leading-6 text-gray-950 dark:text-white  "
-                                                style="">
-                                            {{$record->range}}
-                                            </span>
+                                                    <span
+                                                        class="fi-ta-text-item-label text-sm leading-6 text-gray-950 dark:text-white  "
+                                                        style="">
+                                                        {{$record->range}}
+                                                    </span>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
                                 </a>
+                            </div>
+                        </td>
+                        <td class="fi-ta-cell p-0 first-of-type:ps-1 last-of-type:pe-1 sm:first-of-type:ps-3 sm:last-of-type:pe-3 fi-table-cell-title">
+                            <div class="fi-ta-col-wrp">
+                                <a href="{{route('filament.myspace.resources.rents.edit' , ['record' => $record->id])}}"
+                                   class="flex w-full disabled:pointer-events-none justify-start text-start">
+                                    <div class="fi-ta-text grid w-full gap-y-1 px-3 py-4">
+                                        <div class="flex ">
+                                            <div class="flex max-w-max" style="">
+                                                <div class="fi-ta-text-item inline-flex items-center gap-1.5  ">
+                                                    <span
+                                                        class="fi-ta-text-item-label text-sm leading-6 text-gray-950 dark:text-white  "
+                                                        style="">
+                                                        {{$record->daily_rate ? $record->daily_rate : 'N/A'}}
+                                                        /
+                                                        {{$record->rate ? $record->rate : 'N/A'}}
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </a>
+                            </div>
+                        </td>
+                        <td class="fi-ta-cell p-0 first-of-type:ps-1 last-of-type:pe-1 sm:first-of-type:ps-3 sm:last-of-type:pe-3 fi-table-cell-rating"
+                            wire:key="h5EqdbPyMdzp3q4K7x5R.table.record.6.column.rating">
+                            <div class="fi-ta-col-wrp">
+                                <!--[if BLOCK]><![endif]-->
+                                <div class="flex w-full disabled:pointer-events-none justify-start text-start">
+                                    <div class="flex justify-center p-10" dir="ltr">
+                                        <!--[if BLOCK]><![endif]-->
+                                        @for ($i = 0; $i < 5; $i++)
+                                            @if ($record->rating >= $i+1)
+                                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 30 30" width="18"
+                                                     height="18">
+                                                    <path
+                                                        d="M15.765,2.434l2.875,8.512l8.983,0.104c0.773,0.009,1.093,0.994,0.473,1.455l-7.207,5.364l2.677,8.576 c0.23,0.738-0.607,1.346-1.238,0.899L15,22.147l-7.329,5.196c-0.63,0.447-1.468-0.162-1.238-0.899l2.677-8.576l-7.207-5.364 c-0.62-0.461-0.3-1.446,0.473-1.455l8.983-0.104l2.875-8.512C14.482,1.701,15.518,1.701,15.765,2.434z"
+                                                        fill="#ffc107"></path>
+                                                </svg>
+                                            @else
+                                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 30 30" width="18"
+                                                     height="18">
+                                                    <path
+                                                        d="M15.765,2.434l2.875,8.512l8.983,0.104c0.773,0.009,1.093,0.994,0.473,1.455l-7.207,5.364l2.677,8.576 c0.23,0.738-0.607,1.346-1.238,0.899L15,22.147l-7.329,5.196c-0.63,0.447-1.468-0.162-1.238-0.899l2.677-8.576l-7.207-5.364 c-0.62-0.461-0.3-1.446,0.473-1.455l8.983-0.104l2.875-8.512C14.482,1.701,15.518,1.701,15.765,2.434z"
+                                                        fill="#ddd"></path>
+                                                </svg>
+                                            @endif
+                                        @endfor
+
+
+                                        <!--[if ENDBLOCK]><![endif]-->
+                                    </div>
+                                </div>
+                                <!--[if ENDBLOCK]><![endif]-->
                             </div>
                         </td>
                         <td class="fi-ta-cell p-0 first-of-type:ps-1 last-of-type:pe-1 sm:first-of-type:ps-3 sm:last-of-type:pe-3 fi-ta-actions-cell">
                             <div class="whitespace-nowrap px-3 py-4">
                                 <div class="fi-ta-actions flex shrink-0 items-center gap-3 justify-end">
-                                    <a href="http://book.me.test/myspace/flats/2/edit"
+                                    <a href="{{route('filament.myspace.resources.rents.edit' , ['record' => $record->id])}}"
                                        class="fi-link group/link relative inline-flex items-center justify-center outline-none fi-size-sm fi-link-size-sm gap-1 fi-color-custom fi-color-primary fi-ac-action fi-ac-link-action">
                                         <svg style="--c-400:var(--primary-400);--c-600:var(--primary-600);"
                                              class="fi-link-icon h-4 w-4 text-custom-600 dark:text-custom-400"
@@ -97,8 +162,8 @@
                                         <span
                                             class="font-semibold group-hover/link:underline group-focus-visible/link:underline text-sm text-custom-600 dark:text-custom-400"
                                             style="--c-400:var(--primary-400);--c-600:var(--primary-600);">
-                                Open
-                                </span>
+                                            Open
+                                        </span>
                                     </a>
                                 </div>
                             </div>

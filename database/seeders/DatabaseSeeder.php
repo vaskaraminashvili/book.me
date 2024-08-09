@@ -2,7 +2,6 @@
 
 namespace Database\Seeders;
 
-use App\Models\Flat;
 use App\Models\Rent;
 use App\Models\User;
 use Illuminate\Database\Seeder;
@@ -19,7 +18,7 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         // User::factory(10)->create();
-        Flat::factory(10)->create();
+        //        Flat::factory(10)->create();
         Rent::factory(100)->create();
 
         User::factory()->create([
