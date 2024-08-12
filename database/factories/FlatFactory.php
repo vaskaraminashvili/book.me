@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Enums\Flat\FlatStatus;
 use App\Models\Flat;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
@@ -25,7 +26,7 @@ class FlatFactory extends Factory
             'user_id' => User::factory(),
             'title'   => strtoupper($this->faker->randomLetter()).'.'
                 .$this->faker->randomNumber(1, 80),
-            'status'  => $this->faker->word(),
+            'status'         => $this->faker->randomElement(FlatStatus::class),
         ];
     }
 

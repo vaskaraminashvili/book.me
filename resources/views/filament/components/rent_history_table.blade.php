@@ -1,6 +1,6 @@
 <x-filament::card>
     @php
-        dump($this->data);
+        // dump($this->data);
             $rents = !empty($this->data['rent_history']['rent_history']) ? $this->data['rent_history']['rent_history'] : [];
             $count = !empty($this->data['rent_history']['count']) ? $this->data['rent_history']['count'] : 0;
     @endphp
@@ -19,7 +19,7 @@
                 <th class="fi-ta-header-cell px-3 py-3.5 sm:first-of-type:ps-6 sm:last-of-type:pe-6 fi-table-header-cell-title">
                     <span class="group flex w-full items-center gap-x-1 whitespace-nowrap justify-start">
                         <span class="fi-ta-header-cell-label text-sm font-semibold text-gray-950 dark:text-white">
-                        Lessee
+                        Lessee/დამქირავებელი
                         </span>
                     </span>
                 </th>

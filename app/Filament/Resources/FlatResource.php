@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources;
 
+use App\Enums\Flat\FlatStatus;
 use App\Filament\Resources\FlatResource\Pages;
 use App\Filament\Resources\FlatResource\RelationManagers;
 use App\Models\Flat;
@@ -26,9 +27,9 @@ class FlatResource extends Resource
                 Forms\Components\TextInput::make('title')
                     ->required()
                     ->maxLength(255),
-                Forms\Components\TextInput::make('status')
-                    ->required()
-                    ->maxLength(255),
+                Forms\Components\Select::make('status')
+                    ->options(FlatStatus::class)
+                    ->required(),
             ]);
     }
 

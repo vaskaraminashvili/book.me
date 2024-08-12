@@ -38,6 +38,7 @@ class RentResource extends Resource
                             ->relationship('flat', 'title')
                             ->required(),
                         Forms\Components\TextInput::make('lessee')
+                            ->label('Lessee/დამქირავებელი')
                             ->required()
                             ->maxLength(255),
                         Forms\Components\TextInput::make('mobile')
@@ -55,7 +56,7 @@ class RentResource extends Resource
                                     'count'        => $count,
                                     'rent_history' => $rent_history,
                                 ]);
-                                dump($count);
+                                // dump($count);
                             })
                             ->debounce(200),
 
@@ -69,6 +70,7 @@ class RentResource extends Resource
                     ->columns(2)
                     ->schema([
                         Flatpickr::make('date')
+                        ->disableMobile(false)
                             ->reactive()
                             ->range()
                             ->minDate(today())
@@ -110,7 +112,7 @@ class RentResource extends Resource
                                     = Rent::calculateDaysDiff($get('date'));
                                 if ($number_of_days > 1) {
                                     $full_rate = $number_of_days
-                                        * $get('daily_rate');
+                                        * intval($get('daily_rate'));
                                     $set('rate', $full_rate);
                                 }
                                 if ($get('rate')) {
@@ -198,6 +200,9 @@ class RentResource extends Resource
     {
         return $table
             ->columns([
+                Tables\Columns\TextColumn::make('id')
+
+                ->searchable(),
                 Tables\Columns\TextColumn::make('lessee')
                     ->description(function (Rent $rent) {
                         return 'Flat :'.$rent->flat->title;

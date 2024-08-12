@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\Flat\FlatStatus;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -18,6 +19,7 @@ class Flat extends Model
      */
     protected $fillable
         = [
+            'user_id',
             'title',
             'status',
         ];
@@ -62,6 +64,7 @@ class Flat extends Model
     protected $casts
         = [
             'id' => 'integer',
+            'status' => FlatStatus::class,
         ];
 
     public function rents(): HasMany
